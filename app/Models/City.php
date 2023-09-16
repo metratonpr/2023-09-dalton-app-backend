@@ -11,11 +11,13 @@ class City extends Model
 
     protected $fillable = ['name', 'state_id'];
 
-    public function state(){
-        $this->belongsTo(State::class, 'state_id');
+    public function state()
+    {
+        return  $this->belongsTo(State::class, 'state_id');
     }
 
-    public function zipcodes(){
-        $this->hasMany(ZipCode::class);
+    public function zipcodes()
+    {
+        return    $this->hasMany(ZipCode::class);
     }
 }
