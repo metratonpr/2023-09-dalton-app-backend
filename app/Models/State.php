@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class State extends Model
 {
     use HasFactory;
+
+    protected  $fillable = ['name', 'country_id'];
+
+    public function country()  {
+        $this->belongsTo(Country::class,'country_id');
+    }
+
+    public function cities(){
+        $this->hasMany(City::class);
+    }
 }

@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Neighborhood extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name'];
+
+    public function zipcodes(){
+        $this->hasMany(ZipCode::class);
+    }
+
+
 }
