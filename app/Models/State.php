@@ -13,11 +13,11 @@ class State extends Model
 
     public function country()
     {
-        $this->belongsTo(Country::class, 'country_id');
+        return  $this->belongsTo(Country::class, 'country_id');
     }
 
     public function cities()
     {
-        $this->hasMany(City::class);
+        return   $this->hasMany(City::class);
     }
 }
