@@ -12,11 +12,15 @@ class Address extends Model
     protected $fillable = ['number','complement','zipcode_id','entity_id'];
 
     public function zipcode(){
-        return $this->belongsTo(ZipCode::class);
+        return $this->belongsTo(ZipCode::class,'zipcode_id');
     }
 
     public function entity(){
-        return $this->belongsTo(Entity::class);
+        return $this->belongsTo(Entity::class,'entity_id');
+    }
+
+    public function budgets(){
+        return $this->hasMany(Budget::class);
     }
 
     // $address->entity

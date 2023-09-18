@@ -9,9 +9,10 @@ class BudgetType extends Model
 {
     use HasFactory;
 
-    protected $fillable =['name'];
+    protected $fillable = ['name'];
 
-    public function budgets(){
+    public function budgets()
+    {
         return $this->hasMany(Budget::class);
     }
 }
