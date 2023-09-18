@@ -17,4 +17,6 @@ class Store extends Model
     public function price_list(){
         return $this->hasMany(PriceList::class);
     }
+
+    
 }
