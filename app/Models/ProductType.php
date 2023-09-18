@@ -9,7 +9,7 @@ class ProductType extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['name'];
 
     public function products(){
         return $this->hasMany(Product::class);

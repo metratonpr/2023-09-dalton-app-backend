@@ -10,13 +10,13 @@ class Store extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'contact','email','phone','cnpj',
-    'numero','complemento','address_id'];
+    'number','complement','address_id'];
 
     public function address(){
         return $this->belongsTo(Address::class,'address_id');
     }
 
-    public function price_list(){
+    public function priceList(){
         return $this->hasMany(PriceList::class);
     }
 
