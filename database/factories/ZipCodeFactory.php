@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\City;
+use App\Models\Neighborhood;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,8 +22,12 @@ class ZipCodeFactory extends Factory
             //
             'zipcode' => $this->faker->numberBetween($int1 = 84000000, $int2 = 89000000), 
             'place' => $this->faker->word(), 
-            'city_id', 
-            'neighborhood_id'
+            'city_id' => function () {
+                return City::factory()->create()->id;
+            },
+            'neighborhood_id' => function () {
+                return Neighborhood::factory()->create()->id;
+            },
         ];
     }
 }
