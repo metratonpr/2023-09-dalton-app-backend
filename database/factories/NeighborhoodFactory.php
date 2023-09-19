@@ -18,6 +18,7 @@ class NeighborhoodFactory extends Factory
     {
         return [
             //
+            'name' => $this->faker->word()
         ];
     }
 }

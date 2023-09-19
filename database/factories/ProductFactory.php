@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\ProductType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,13 @@ class ProductFactory extends Factory
     {
         return [
             //
+            'name' => $this->faker->word(),
+            'description' => $this->faker->sentence(),
+            'warranty' => $this->faker->boolean(),
+            'warranty_time' => $this->faker->randomNumber($min = 30, $max=90),
+            'product_type_id' => function () {
+                return ProductType::factory()->create()->id;
+            },
         ];
     }
 }

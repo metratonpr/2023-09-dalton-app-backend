@@ -18,6 +18,7 @@ class BudgetTypeFactory extends Factory
     {
         return [
             //
+            'name' => $this->faker->word()
         ];
     }
 }

@@ -18,6 +18,11 @@ class EntityFactory extends Factory
     {
         return [
             //
+            'name' => $this->faker->word(), 
+            'cpf_cnpj' => $this->faker->randomNumber() * 1000, 
+            'rg_ie' => $this->faker->randomNumber() * 5000,  
+            'email' => $this->faker->email(),  
+            'phone' => $this->faker->phoneNumber()
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Entity;
+use App\Models\ZipCode;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +20,14 @@ class AddressFactory extends Factory
     {
         return [
             //
+            'number' => $this->faker->randomNumber(),
+            'complement' => $this->faker->word(),
+            'zipcode_id'=> function () {
+                return ZipCode::factory()->create()->id;
+            },
+            'entity_id'=> function () {
+                return Entity::factory()->create()->id;
+            },
         ];
     }
 }

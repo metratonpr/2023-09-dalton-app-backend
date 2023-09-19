@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\State;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,10 @@ class CityFactory extends Factory
     {
         return [
             //
+            'name' => $this->faker->word(), 
+            'state_id' => function () {
+                return State::factory()->create()->id;
+            },
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
+use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +20,14 @@ class PriceListFactory extends Factory
     {
         return [
             //
+            'price' => $this->faker->randomFloat($nbMaxDecimals = 2, $min = 0.0, $max = 100.00),
+            'isAvailable' => $this->faker->boolean(),
+            'store_id' => function () {
+                return Store::factory()->create()->id;
+            },
+            'product_id' => function () {
+                return Product::factory()->create()->id;
+            },
         ];
     }
 }
