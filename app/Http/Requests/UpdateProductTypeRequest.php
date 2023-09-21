@@ -3,28 +3,24 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UpdateProductTypeRequest extends FormRequest
+class ProductTypeUpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
+        $productTypeId = $this->route('product_type')->id;
+
         return [
-            //
+            'name' => [
+                'required',
+                Rule::unique('product_types', 'name')->ignore($productTypeId),
+            ],
         ];
     }
 }

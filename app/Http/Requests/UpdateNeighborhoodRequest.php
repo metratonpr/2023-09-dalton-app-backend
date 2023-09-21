@@ -3,28 +3,24 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UpdateNeighborhoodRequest extends FormRequest
+class NeighborhoodUpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
+        $neighborhoodId = $this->route('neighborhood')->id;
+
         return [
-            //
+            'name' => [
+                'required',
+                Rule::unique('neighborhoods', 'name')->ignore($neighborhoodId),
+            ],
         ];
     }
 }

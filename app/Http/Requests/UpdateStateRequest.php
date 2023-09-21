@@ -3,28 +3,25 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UpdateStateRequest extends FormRequest
+class StateUpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
+        $stateId = $this->route('state')->id;
+
         return [
-            //
+            'name' => [
+                'required',
+                Rule::unique('states', 'name')->ignore($stateId),
+            ],
+            'country_id' => 'required|exists:countries,id',
         ];
     }
 }

@@ -4,27 +4,22 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatePriceListRequest extends FormRequest
+class PriceListUpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
+        $priceListId = $this->route('price_list')->id;
+
         return [
-            //
+            'price' => 'required|numeric|min:0',
+            'isAvailable' => 'required|boolean',
+            'store_id' => 'required|exists:stores,id',
+            'product_id' => 'required|exists:products,id',
         ];
     }
 }

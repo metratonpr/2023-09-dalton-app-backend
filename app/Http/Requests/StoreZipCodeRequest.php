@@ -4,27 +4,20 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreZipCodeRequest extends FormRequest
+class ZipCodeStoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
         return [
-            //
+            'zipcode' => 'required|unique:zip_codes,zipcode',
+            'place' => 'required|string',
+            'city_id' => 'required|exists:cities,id',
+            'neighborhood_id' => 'required|exists:neighborhoods,id',
         ];
     }
 }

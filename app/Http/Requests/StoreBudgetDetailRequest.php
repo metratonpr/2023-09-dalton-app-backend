@@ -13,7 +13,7 @@ class StoreBudgetDetailRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,12 @@ class StoreBudgetDetailRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'amount' => 'required|numeric|min:1',
+            'price' => 'required|numeric|min:0',
+            'discount' => 'nullable|numeric|min:0|max:100',
+            'subtotal' => 'required|numeric|min:0',
+            'budget_id' => 'required|exists:budgets,id',
+            'price_list_id' => 'required|exists:price_lists,id',
         ];
     }
 }
