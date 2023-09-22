@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Neighborhood;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreNeighborhoodRequest;
 use App\Http\Requests\UpdateNeighborhoodRequest;
 
@@ -15,17 +16,9 @@ class NeighborhoodController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $neighborhoods = Neighborhood::paginate(10);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response()->json(['data' => $neighborhoods]);
     }
 
     /**
@@ -36,51 +29,73 @@ class NeighborhoodController extends Controller
      */
     public function store(StoreNeighborhoodRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $neighborhood = Neighborhood::create($data);
+
+        return response()->json($neighborhood, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Neighborhood  $neighborhood
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Neighborhood $neighborhood)
+    public function show($id)
     {
-        //
-    }
+        $neighborhood = Neighborhood::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Neighborhood  $neighborhood
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Neighborhood $neighborhood)
-    {
-        //
+        if (!$neighborhood) {
+            return response()->json(['error' => 'Bairro não encontrado.'], 404);
+        }
+
+        return response()->json(['data' => $neighborhood]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateNeighborhoodRequest  $request
-     * @param  \App\Models\Neighborhood  $neighborhood
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateNeighborhoodRequest $request, Neighborhood $neighborhood)
+    public function update(UpdateNeighborhoodRequest $request, $id)
     {
-        //
+        $neighborhood = Neighborhood::find($id);
+
+        if (!$neighborhood) {
+            return response()->json(['error' => 'Bairro não encontrado.'], 404);
+        }
+
+        $data = $request->validated();
+
+        $neighborhood->update($data);
+
+        return response()->json(['data' => $neighborhood]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Neighborhood  $neighborhood
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Neighborhood $neighborhood)
+    public function destroy($id)
     {
-        //
+        $neighborhood = Neighborhood::find($id);
+
+        if (!$neighborhood) {
+            return response()->json(['error' => 'Bairro não encontrado.'], 404);
+        }
+
+        // Verificar se há códigos postais associados antes de excluir
+        if ($neighborhood->zipcodes->count() > 0) {
+            return response()->json(['error' => 'Este bairro possui códigos postais associados e não pode ser excluído.'], 400);
+        }
+
+        $neighborhood->delete();
+
+        return response()->json(['message' => 'Bairro deletado com sucesso.'], 200);
     }
 }

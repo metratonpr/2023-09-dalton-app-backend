@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BudgetType;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreBudgetTypeRequest;
 use App\Http\Requests\UpdateBudgetTypeRequest;
 
@@ -15,17 +16,9 @@ class BudgetTypeController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $budgetTypes = BudgetType::paginate(10);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response()->json(['data' => $budgetTypes]);
     }
 
     /**
@@ -36,51 +29,68 @@ class BudgetTypeController extends Controller
      */
     public function store(StoreBudgetTypeRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $budgetType = BudgetType::create($data);
+
+        return response()->json($budgetType, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\BudgetType  $budgetType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(BudgetType $budgetType)
+    public function show($id)
     {
-        //
-    }
+        $budgetType = BudgetType::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\BudgetType  $budgetType
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(BudgetType $budgetType)
-    {
-        //
+        if (!$budgetType) {
+            return response()->json(['error' => 'Tipo de Orçamento não encontrado.'], 404);
+        }
+
+        return response()->json(['data' => $budgetType]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateBudgetTypeRequest  $request
-     * @param  \App\Models\BudgetType  $budgetType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateBudgetTypeRequest $request, BudgetType $budgetType)
+    public function update(UpdateBudgetTypeRequest $request, $id)
     {
-        //
+        $budgetType = BudgetType::find($id);
+
+        if (!$budgetType) {
+            return response()->json(['error' => 'Tipo de Orçamento não encontrado.'], 404);
+        }
+
+        $data = $request->validated();
+
+        $budgetType->update($data);
+
+        return response()->json(['data' => $budgetType]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\BudgetType  $budgetType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BudgetType $budgetType)
+    public function destroy($id)
     {
-        //
+        $budgetType = BudgetType::find($id);
+
+        if (!$budgetType) {
+            return response()->json(['error' => 'Tipo de Orçamento não encontrado.'], 404);
+        }
+
+        $budgetType->delete();
+
+        return response()->json(['message' => 'Tipo de Orçamento deletado com sucesso.'], 200);
     }
 }

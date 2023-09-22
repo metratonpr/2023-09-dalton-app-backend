@@ -23,6 +23,10 @@ class Address extends Model
         return $this->hasMany(Budget::class);
     }
 
+    public function stores(){
+        return $this->hasMany(Store::class);
+    }
+
     // $address->entity
     //$address->zipcode
 }

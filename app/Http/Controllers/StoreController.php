@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Store;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreStoreRequest;
 use App\Http\Requests\UpdateStoreRequest;
 
@@ -15,17 +16,9 @@ class StoreController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $stores = Store::paginate(10);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response()->json(['data' => $stores]);
     }
 
     /**
@@ -36,51 +29,73 @@ class StoreController extends Controller
      */
     public function store(StoreStoreRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $store = Store::create($data);
+
+        return response()->json($store, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Store  $store
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Store $store)
+    public function show($id)
     {
-        //
-    }
+        $store = Store::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Store  $store
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Store $store)
-    {
-        //
+        if (!$store) {
+            return response()->json(['error' => 'Loja não encontrada.'], 404);
+        }
+
+        return response()->json(['data' => $store]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateStoreRequest  $request
-     * @param  \App\Models\Store  $store
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateStoreRequest $request, Store $store)
+    public function update(UpdateStoreRequest $request, $id)
     {
-        //
+        $store = Store::find($id);
+
+        if (!$store) {
+            return response()->json(['error' => 'Loja não encontrada.'], 404);
+        }
+
+        $data = $request->validated();
+
+        $store->update($data);
+
+        return response()->json(['data' => $store]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Store  $store
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Store $store)
+    public function destroy($id)
     {
-        //
+        $store = Store::find($id);
+
+        if (!$store) {
+            return response()->json(['error' => 'Loja não encontrada.'], 404);
+        }
+
+        // Verificar se há listas de preços associadas antes de excluir
+        if ($store->priceList->count() > 0) {
+            return response()->json(['error' => 'Esta loja possui listas de preços associadas e não pode ser excluída.'], 400);
+        }
+
+        $store->delete();
+
+        return response()->json(['message' => 'Loja deletada com sucesso.'], 200);
     }
 }

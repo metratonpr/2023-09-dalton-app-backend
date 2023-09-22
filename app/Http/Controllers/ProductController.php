@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 
@@ -15,17 +16,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $products = Product::paginate(10);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response()->json(['data' => $products]);
     }
 
     /**
@@ -36,51 +29,73 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $product = Product::create($data);
+
+        return response()->json($product, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
-    }
+        $product = Product::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
-    {
-        //
+        if (!$product) {
+            return response()->json(['error' => 'Produto não encontrado.'], 404);
+        }
+
+        return response()->json(['data' => $product]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateProductRequest  $request
-     * @param  \App\Models\Product  $product
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, $id)
     {
-        //
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['error' => 'Produto não encontrado.'], 404);
+        }
+
+        $data = $request->validated();
+
+        $product->update($data);
+
+        return response()->json(['data' => $product]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Product  $product
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        //
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['error' => 'Produto não encontrado.'], 404);
+        }
+
+        // Verificar se há listas de preços associadas antes de excluir
+        if ($product->priceList->count() > 0) {
+            return response()->json(['error' => 'Este produto possui listas de preços associadas e não pode ser excluído.'], 400);
+        }
+
+        $product->delete();
+
+        return response()->json(['message' => 'Produto deletado com sucesso.'], 200);
     }
 }

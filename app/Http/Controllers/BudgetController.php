@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Budget;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreBudgetRequest;
 use App\Http\Requests\UpdateBudgetRequest;
 
@@ -15,17 +16,9 @@ class BudgetController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $budgets = Budget::paginate(10);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response()->json(['data' => $budgets]);
     }
 
     /**
@@ -36,51 +29,70 @@ class BudgetController extends Controller
      */
     public function store(StoreBudgetRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $budget = Budget::create($data);
+
+        return response()->json($budget, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Budget  $budget
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Budget $budget)
+    public function show($id)
     {
-        //
-    }
+        $budget = Budget::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Budget  $budget
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Budget $budget)
-    {
-        //
+        if (!$budget) {
+            return response()->json(['error' => 'Orçamento não encontrado.'], 404);
+        }
+
+        return response()->json(['data' => $budget]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateBudgetRequest  $request
-     * @param  \App\Models\Budget  $budget
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateBudgetRequest $request, Budget $budget)
+    public function update(UpdateBudgetRequest $request, $id)
     {
-        //
+        $budget = Budget::find($id);
+
+        if (!$budget) {
+            return response()->json(['error' => 'Orçamento não encontrado.'], 404);
+        }
+
+        $data = $request->validated();
+
+        $budget->update($data);
+
+        return response()->json(['data' => $budget]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Budget  $budget
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Budget $budget)
+    public function destroy($id)
     {
-        //
+        $budget = Budget::find($id);
+
+        if (!$budget) {
+            return response()->json(['error' => 'Orçamento não encontrado.'], 404);
+        }
+
+        $budget->budgetDetails()->delete(); // Exclui detalhes de orçamento associados
+
+        $budget->delete();
+
+        return response()->json(['message' => 'Orçamento deletado com sucesso.'], 200);
     }
 }

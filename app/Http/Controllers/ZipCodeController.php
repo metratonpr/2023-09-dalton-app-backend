@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ZipCode;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreZipCodeRequest;
 use App\Http\Requests\UpdateZipCodeRequest;
 
@@ -15,17 +16,9 @@ class ZipCodeController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $zipCodes = ZipCode::paginate(10);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response()->json(['data' => $zipCodes]);
     }
 
     /**
@@ -36,51 +29,73 @@ class ZipCodeController extends Controller
      */
     public function store(StoreZipCodeRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $zipCode = ZipCode::create($data);
+
+        return response()->json($zipCode, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ZipCode  $zipCode
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(ZipCode $zipCode)
+    public function show($id)
     {
-        //
-    }
+        $zipCode = ZipCode::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ZipCode  $zipCode
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ZipCode $zipCode)
-    {
-        //
+        if (!$zipCode) {
+            return response()->json(['error' => 'Código Postal não encontrado.'], 404);
+        }
+
+        return response()->json(['data' => $zipCode]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateZipCodeRequest  $request
-     * @param  \App\Models\ZipCode  $zipCode
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateZipCodeRequest $request, ZipCode $zipCode)
+    public function update(UpdateZipCodeRequest $request, $id)
     {
-        //
+        $zipCode = ZipCode::find($id);
+
+        if (!$zipCode) {
+            return response()->json(['error' => 'Código Postal não encontrado.'], 404);
+        }
+
+        $data = $request->validated();
+
+        $zipCode->update($data);
+
+        return response()->json(['data' => $zipCode]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ZipCode  $zipCode
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ZipCode $zipCode)
+    public function destroy($id)
     {
-        //
+        $zipCode = ZipCode::find($id);
+
+        if (!$zipCode) {
+            return response()->json(['error' => 'Código Postal não encontrado.'], 404);
+        }
+
+        // Verificar se há endereços associados antes de excluir
+        if ($zipCode->addresses->count() > 0) {
+            return response()->json(['error' => 'Este Código Postal possui endereços associados e não pode ser excluído.'], 400);
+        }
+
+        $zipCode->delete();
+
+        return response()->json(['message' => 'Código Postal deletado com sucesso.'], 200);
     }
 }
