@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('budget_detail', function (Blueprint $table) {
+        Schema::table('budget_details', function (Blueprint $table) {
             //
             $table->foreignId('price_list_id')->constrained('price_lists');
         });
