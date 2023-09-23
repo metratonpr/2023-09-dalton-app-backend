@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::table('budget_detail', function (Blueprint $table) {
             //
+            $table->foreignId('price_list_id')->constrained('price_lists');
         });
     }
 
@@ -27,6 +28,8 @@ return new class extends Migration
     {
         Schema::table('budget_detail', function (Blueprint $table) {
             //
+            $table->dropForeign(['price_list_id']);
+            $table->dropColumn('price_list_id');
         });
     }
 };
