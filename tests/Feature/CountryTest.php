@@ -97,7 +97,7 @@ class CountryTest extends TestCase
      *
      * @return void
      */
-    public function test_exibicao_de_pais()
+    public function test_exibicao_de_pais_sucesso()
     {
         // Crie um país usando o Factory
         $country = Country::factory()->create();
@@ -130,7 +130,7 @@ class CountryTest extends TestCase
 
         // Verifique se a mensagem de erro é retornada
         $response->assertJson([
-            'message' => 'País não encontrado.',
+            'error' => 'País não encontrado.',
         ]);
     }
 
@@ -224,7 +224,7 @@ class CountryTest extends TestCase
 
         // Verifique se a mensagem de erro é retornada
         $response->assertJson([
-            'message' => 'País não encontrado.',
+            'error' => 'País não encontrado.',
         ]);
     }
 }

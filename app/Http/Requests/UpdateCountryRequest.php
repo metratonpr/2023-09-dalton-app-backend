@@ -14,7 +14,7 @@ class UpdateCountryRequest extends FormRequest
 
     public function rules()
     {
-        $countryId = $this->route('country')->id;
+        $countryId = $this->route('country');
 
         return [
             'name' => [

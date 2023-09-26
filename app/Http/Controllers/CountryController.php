@@ -51,7 +51,7 @@ class CountryController extends Controller
             return response()->json(['error' => 'País não encontrado.'], 404);
         }
 
-        return response()->json(['data' => $country]);
+        return response()->json($country, 200);
     }
 
     /**
@@ -73,7 +73,7 @@ class CountryController extends Controller
 
         $country->update($data);
 
-        return response()->json(['data' => $country]);
+        return response()->json($country, 200);
     }
 
     /**
