@@ -16,7 +16,7 @@ class StateController extends Controller
      */
     public function index()
     {
-        $states = State::paginate(10);
+        $states = State::all();
 
         return response()->json(['data' => $states]);
     }
@@ -47,10 +47,11 @@ class StateController extends Controller
         $state = State::find($id);
 
         if (!$state) {
-            return response()->json(['error' => 'Estado não encontrado.'], 404);
+            return response()->json(['error' => 
+            'Estado não encontrado.'],   404);
         }
 
-        return response()->json(['data' => $state]);
+        return response()->json($state,200);
     }
 
     /**
@@ -63,16 +64,13 @@ class StateController extends Controller
     public function update(UpdateStateRequest $request, $id)
     {
         $state = State::find($id);
-
         if (!$state) {
-            return response()->json(['error' => 'Estado não encontrado.'], 404);
+            return response()->json(['error' => 
+            'Estado não encontrado.'], 404);
         }
-
         $data = $request->validated();
-
         $state->update($data);
-
-        return response()->json(['data' => $state]);
+        return response()->json($state);
     }
 
     /**
@@ -86,16 +84,19 @@ class StateController extends Controller
         $state = State::find($id);
 
         if (!$state) {
-            return response()->json(['error' => 'Estado não encontrado.'], 404);
+            return response()->json(['error' => 
+            'Estado não encontrado.'], 404);
         }
 
         // Verificar se há cidades associadas antes de excluir
         if ($state->cities->count() > 0) {
-            return response()->json(['error' => 'Este estado possui cidades associadas e não pode ser excluído.'], 400);
+            return response()->json(['error' => 
+            'Este estado possui cidades associadas e não pode ser excluído.'], 400);
         }
 
         $state->delete();
 
-        return response()->json(['message' => 'Estado deletado com sucesso.'], 200);
+        return response()->json(['message' => 
+        'Estado deletado com sucesso.'], 200);
     }
 }

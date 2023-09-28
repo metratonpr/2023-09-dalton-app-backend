@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StateUpdateRequest extends FormRequest
+class UpdateStateRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,7 +14,7 @@ class StateUpdateRequest extends FormRequest
 
     public function rules()
     {
-        $stateId = $this->route('state')->id;
+        $stateId = $this->route('state');
 
         return [
             'name' => [
