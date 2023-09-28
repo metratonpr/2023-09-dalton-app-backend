@@ -82,8 +82,8 @@ class StateTest extends TestCase
     public function test_criacao_estado_com_falha()
     {
         $newData = [
-            'name' => '', 
-            'country_id' => 99999, 
+            'name' => '',
+            'country_id' => 99999,
         ];
 
         // Faça uma requisição POST para a rota de criação
@@ -100,13 +100,14 @@ class StateTest extends TestCase
      * Tentar salvar com nome duplicado e falhar
      * @return void
      */
-    public function test_tentar_salvar_estado_com_mesmo_nome_falhar(){
+    public function test_tentar_salvar_estado_com_mesmo_nome_falhar()
+    {
 
         //Criar um teste
         $data  = State::factory()->create();
         $newData = [
-            'name'=>$data->name,
-            'country_id'=>$data->country_id
+            'name' => $data->name,
+            'country_id' => $data->country_id
         ];
 
         // Faça uma requisição POST para a rota de criação
@@ -117,14 +118,50 @@ class StateTest extends TestCase
 
         // Verifique se há erros de validação 
         $response->assertJsonValidationErrors(['name']);
-
     }
 
     /**
      * Criar um estado e pesquisar pelo seu id
      * @return void
      */
-     public function test_criar_estado_pesquisar_pelo_id(){
+    public function test_criar_estado_pesquisar_pelo_id()
+    {
 
-     }
+        //Criar estado
+        $state = State::factory()->create();
+
+        //Processar
+        $response = $this->getJson('/api/states/' . $state->id);
+
+        //Deu certo a solicitação = Status 200
+        $response->assertStatus(200);
+        // Verifique se a estrutura dos dados retornados está correta
+        $response->assertJsonStructure([
+            'id', 'name', 'country_id','created_at','updated_at',
+        ]);
+        //verificar o conteudo
+        $response->assertJson([
+            'name' => $state->name,
+            'country_id' => $state->country_id,
+        ]);
+    }
+
+    /**
+     * Testa a exibição de um estado inexistente.
+     *
+     * @return void
+     */
+    public function test_exibicao_estado_inexistente()
+    {
+        // Faça uma requisição GET para a rota
+        $response = $this->getJson('/api/estado/999999');
+
+        // Verifique se a resposta tem status 404 (Not Found)
+        $response->assertStatus(404);
+
+        // Verifique se a mensagem de erro é retornada
+        $response->assertJson([
+            'error' => 'Estado não encontrado.',
+        ]);
+    }
 }
