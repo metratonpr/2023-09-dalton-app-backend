@@ -154,7 +154,7 @@ class StateTest extends TestCase
     public function test_exibicao_estado_inexistente()
     {
         // Faça uma requisição GET para a rota
-        $response = $this->getJson('/api/estado/999999');
+        $response = $this->getJson('/api/states/999999');
 
         // Verifique se a resposta tem status 404 (Not Found)
         $response->assertStatus(404);
