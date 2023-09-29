@@ -181,5 +181,42 @@ class StateTest extends TestCase
         ];
 
         $response = $this->putJson('/states/'.$state->id,$newData);
+
+        //testar argumentos
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'id' => $state->id,
+            'name' => $newData['name'],
+            'country_id' => $newData['country_id'],
+        ]);
+    }
+
+    /**
+     * Testar salvar com o mesmo nome e id
+     * @return void
+     */
+    public function test_criar_atualizar_state_mesmo_nome_com_sucesso(){
+        //Criar estado
+        $state = State::factory()->create();
+        //Criar novo
+        $pais = Country::factory()->create();
+
+        //Dados a serem atualizados
+        $newData = [
+            'name' => $state->name,
+            'country_id' => $pais->id,
+        ];
+
+        $response = $this->putJson('/states/'.$state->id,$newData);
+
+        //testar argumentos
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'id' => $state->id,
+            'name' => $state->name,
+            'country_id' => $pais->id,
+        ]);
     }
 }
