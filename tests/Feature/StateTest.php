@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Country;
 use App\Models\State;
 use Database\Factories\StateFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -163,5 +164,22 @@ class StateTest extends TestCase
         $response->assertJson([
             'error' => 'Estado não encontrado.',
         ]);
+    }
+
+    /**
+     * Testa atualização com sucesso!
+     * @return void
+     */
+    public function test_criar_atualizar_state_com_sucesso(){
+        //Criar estado
+        $state = State::factory()->create();
+
+        //Dados a serem atualizados
+        $newData = [
+            'name' => $this->faker()->word(),
+            'country_id' => $state->country_id,
+        ];
+
+        $response = $this->putJson('/states/'.$state->id,$newData);
     }
 }
