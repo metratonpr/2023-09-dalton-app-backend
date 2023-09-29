@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\City;
 use App\Models\Country;
 use App\Models\State;
 use Database\Factories\StateFactory;
@@ -300,5 +301,22 @@ class StateTest extends TestCase
             ]);
     }
 
-    
+    /**
+     * Evitar destruir estado com cidades registrados
+     * @return void
+     */
+    public function test_tentar_destrui_estado_com_cidades_falhar(){
+
+        //Criar uma cidade
+        $cidade = City::factory()->create();
+
+        //Processar
+        $response = $this->deleteJson('/api/states/'.$cidade->state_id);
+
+        $response->assertStatus(400)
+        ->assertJson([
+            'error' => 
+            'Este estado possui cidades associadas e não pode ser excluído.'
+        ]);
+    }
 }
