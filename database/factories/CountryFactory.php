@@ -18,7 +18,7 @@ class CountryFactory extends Factory
     {
         return [
             //
-            'name' => $this->faker->word()
+            'name' => $this->faker->word(). " ".$this->faker->randomNumber($min = 1, $max=9999999), 
         ];
     }
 }

@@ -262,7 +262,7 @@ class StateTest extends TestCase
         //Avaliar o response
         $response->assertStatus(404)
             ->assertJson([
-                'message' => 'Estado não encontrado.'
+                'error' => 'Estado não encontrado.'
             ]);
     }
 
