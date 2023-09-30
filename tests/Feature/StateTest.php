@@ -182,7 +182,7 @@ class StateTest extends TestCase
             'country_id' => $state->country_id,
         ];
 
-        $response = $this->putJson('/states/' . $state->id, $newData);
+        $response = $this->putJson('/api/states/' . $state->id, $newData);
 
         //testar argumentos
         $response
@@ -211,7 +211,7 @@ class StateTest extends TestCase
             'country_id' => $pais->id,
         ];
 
-        $response = $this->putJson('/states/' . $state->id, $newData);
+        $response = $this->putJson('/api/states/' . $state->id, $newData);
 
         //testar argumentos
         $response
@@ -247,7 +247,7 @@ class StateTest extends TestCase
      * Falhar ao tentar atualizar um registro inexistente
      * @return void
      */
-    public function falhar_atualizar_registro_inexistente()
+    public function test_falhar_atualizar_registro_inexistente()
     {
         //Criar novo
         $pais = Country::factory()->create();
@@ -289,7 +289,7 @@ class StateTest extends TestCase
      * Falhar ao tentar atualizar um registro inexistente
      * @return void
      */
-    public function falhar_destruir_registro_inexistente()
+    public function test_falhar_destruir_registro_inexistente()
     {
         //Processar
         $response = $this->deleteJson('/api/states/999999999');
@@ -297,7 +297,7 @@ class StateTest extends TestCase
         //Avaliar o response
         $response->assertStatus(404)
             ->assertJson([
-                'message' => 'Estado não encontrado.'
+                'error' => 'Estado não encontrado.'
             ]);
     }
 
