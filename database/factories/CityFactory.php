@@ -19,7 +19,7 @@ class CityFactory extends Factory
     {
         return [
             //
-            'name' => $this->faker->word(), 
+            'name' => $this->faker->unique()->city(), 
             'state_id' => function () {
                 return State::factory()->create()->id;
             },

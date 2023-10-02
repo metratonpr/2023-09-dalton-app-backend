@@ -20,7 +20,7 @@ class ZipCodeFactory extends Factory
     {
         return [
             //
-            'zipcode' => $this->faker->numberBetween($int1 = 84000000, $int2 = 89000000), 
+            'zipcode' => $this->faker->unique()->numerify('########'), 
             'place' => $this->faker->word(), 
             'city_id' => function () {
                 return City::factory()->create()->id;

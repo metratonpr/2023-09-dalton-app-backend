@@ -19,7 +19,7 @@ class ProductFactory extends Factory
     {
         return [
             //
-            'name' => $this->faker->word(),
+            'name' => $this->faker->unique()->word(),
             'description' => $this->faker->sentence(),
             'warranty' => $this->faker->boolean(),
             'warranty_time' => $this->faker->randomNumber($min = 30, $max=90),

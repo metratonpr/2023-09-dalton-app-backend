@@ -20,8 +20,8 @@ class AddressFactory extends Factory
     {
         return [
             //
-            'number' => $this->faker->randomNumber(),
-            'complement' => $this->faker->word(),
+            'number' => $this->faker->unique()->randomNumber(),
+            'complement' => $this->faker->unique()->word(),
             'zipcode_id'=> function () {
                 return ZipCode::factory()->create()->id;
             },

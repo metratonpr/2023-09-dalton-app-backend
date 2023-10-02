@@ -19,7 +19,7 @@ class StateFactory extends Factory
     {
         return [
             //
-            'name' => $this->faker->word(). " ".$this->faker->randomNumber($min = 1, $max=9999999), 
+            'name' => $this->faker->unique()->word(), 
             'country_id' => function () {
                 return Country::factory()->create()->id;
             },

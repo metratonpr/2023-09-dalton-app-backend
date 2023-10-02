@@ -20,7 +20,7 @@ class BudgetFactory extends Factory
     {
         return [
             //
-            'number' => $this->faker->randomNumber(),
+            'number' => $this->faker->unique()->randomNumber(),
             'budget_date'  => $this->faker->dateTimeBetween('2023-01-01', '2023-07-01')->format('Y-m-d'),
             'expiration_date' => $this->faker->dateTimeBetween('2023-07-01', '2023-09-01')->format('Y-m-d'),
             'delivery_date' => $this->faker->dateTimeBetween('2023-09-01', '2023-12-31')->format('Y-m-d'),

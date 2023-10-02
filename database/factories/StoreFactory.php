@@ -21,9 +21,9 @@ class StoreFactory extends Factory
             //
             'name' => $this->faker->word(),
             'contact' => $this->faker->word(),
-            'email' => $this->faker->email(),
+            'email' => $this->faker->unique()->email(),
             'phone' => $this->faker->phoneNumber(),
-            'cnpj' => $this->faker->numberBetween($int1 = 1111111111111, $int2 = 9999999999999),
+            'cnpj' => $this->faker->unique()->numerify('#############'),
             'number' => $this->faker->numberBetween($int1 = 100, $int2 = 1000),
             'complement' => $this->faker->word(),
             'address_id'  => function () {
