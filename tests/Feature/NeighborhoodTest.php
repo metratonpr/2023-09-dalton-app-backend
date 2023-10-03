@@ -33,7 +33,7 @@ class NeighborhoodTest extends TestCase
      * Criar Bairro com sucesso
      */
     public function test_criar_bairro_com_sucesso()
-    {    
+    {
         // criar bairro
         $newData = Neighborhood::factory()->make()->toArray();
         //Processar
@@ -42,6 +42,36 @@ class NeighborhoodTest extends TestCase
         $response->assertStatus(201)
             ->assertJsonStructure(
                 ['id', 'name', 'created_at', 'updated_at',]
+            );
+    }
+
+    /**
+     * Criar array vazio e falhar ao salvar
+     * @return void
+     */
+    public function test_falhar_salvar_bairro_vazio()
+    {
+        //Processar
+        $response = $this->postJson('/api/neighborhoods', []);
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(
+                ['name']
+            );
+    }
+
+    /**
+     * Tentar salvar com o mesmo nome e falhar
+     */
+    public function test_falhar_salvar_mesmo_nome_bairro_falhar()
+    {
+        $salvar = Neighborhood::factory()->create();
+        $novo = Neighborhood::factory()->make()->toArray();
+        $novo['name'] = $salvar->name;
+        //Processar
+        $response = $this->postJson('/api/neighborhoods', $novo);
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(
+                ['name']
             );
     }
 }

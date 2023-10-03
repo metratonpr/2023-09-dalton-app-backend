@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreNeighborhoodRequest;
 use App\Http\Requests\UpdateNeighborhoodRequest;
 use App\Models\Neighborhood;
-use Illuminate\Http\Request;
 
 
 class NeighborhoodController extends Controller
