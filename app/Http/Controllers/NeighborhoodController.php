@@ -49,7 +49,7 @@ class NeighborhoodController extends Controller
             return response()->json(['error' => 'Bairro não encontrado.'], 404);
         }
 
-        return response()->json(['data' => $neighborhood]);
+        return response()->json($neighborhood);
     }
 
     /**
