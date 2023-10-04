@@ -15,6 +15,5 @@ class Neighborhood extends Model
     {
         return  $this->hasMany(ZipCode::class);
     }
-
-    //vaca preta
+    
 }

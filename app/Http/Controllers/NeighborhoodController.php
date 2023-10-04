@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Neighborhood;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreNeighborhoodRequest;
 use App\Http\Requests\UpdateNeighborhoodRequest;
+use App\Models\Neighborhood;
+
 
 class NeighborhoodController extends Controller
 {
@@ -16,8 +16,7 @@ class NeighborhoodController extends Controller
      */
     public function index()
     {
-        $neighborhoods = Neighborhood::paginate(10);
-
+        $neighborhoods = Neighborhood::all();
         return response()->json(['data' => $neighborhoods]);
     }
 
@@ -50,7 +49,7 @@ class NeighborhoodController extends Controller
             return response()->json(['error' => 'Bairro não encontrado.'], 404);
         }
 
-        return response()->json(['data' => $neighborhood]);
+        return response()->json($neighborhood);
     }
 
     /**

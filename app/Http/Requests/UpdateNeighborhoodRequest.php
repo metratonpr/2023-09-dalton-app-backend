@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class NeighborhoodUpdateRequest extends FormRequest
+class UpdateNeighborhoodRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,7 +14,8 @@ class NeighborhoodUpdateRequest extends FormRequest
 
     public function rules()
     {
-        $neighborhoodId = $this->route('neighborhood')->id;
+        //www.seusite.com/neighborhoods/1
+        $neighborhoodId = $this->route('neighborhood');
 
         return [
             'name' => [

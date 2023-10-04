@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class NeighborhoodStoreRequest extends FormRequest
+class StoreNeighborhoodRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,7 +14,8 @@ class NeighborhoodStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:neighborhoods,name',
+            'name' => 'required|unique:neighborhoods,name',            
+
         ];
     }
 }
