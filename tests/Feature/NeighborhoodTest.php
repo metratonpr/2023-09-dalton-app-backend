@@ -11,140 +11,217 @@ use Tests\TestCase;
 class NeighborhoodTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
+
     /**
-     * Deve criar 10 bairros e retornar
-     * @return void
+     * Deve listar bairros com sucesso.
      */
-    public function test_salvar_pesquisar_bairro_banco_dados()
+    public function test_listar_bairros_com_sucesso()
     {
-        //Preparar os dados ou parametros
+        // Cria 10 bairros usando a fábrica
         Neighborhood::factory()->count(10)->create();
-        //Processar
+
+        // Faz uma requisição GET para a rota de listagem de bairros
         $response = $this->getJson('/api/neighborhoods');
+
+        // Verifica se a resposta tem o status HTTP 200 (OK)
+        // Verifica se a resposta possui 10 itens no campo 'data'
+        // Verifica a estrutura dos dados retornados
         $response->assertStatus(200)
             ->assertJsonCount(10, 'data')
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'name', 'created_at', 'updated_at',]
+                    '*' => ['id', 'name', 'created_at', 'updated_at']
                 ]
             ]);
     }
 
     /**
-     * Criar Bairro com sucesso
+     * Deve criar um bairro com sucesso.
      */
     public function test_criar_bairro_com_sucesso()
     {
-        // criar bairro
+        // Cria um novo bairro usando a fábrica e transforma em um array
         $newData = Neighborhood::factory()->make()->toArray();
-        //Processar
+
+        // Faz uma requisição POST para a rota de criação de bairro
         $response = $this->postJson('/api/neighborhoods', $newData);
 
+        // Verifica se a resposta tem o status HTTP 201 (Created)
+        // Verifica a estrutura dos dados retornados
         $response->assertStatus(201)
-            ->assertJsonStructure(
-                ['id', 'name', 'created_at', 'updated_at',]
-            );
+            ->assertJsonStructure(['id', 'name', 'created_at', 'updated_at']);
     }
 
     /**
-     * Criar array vazio e falhar ao salvar
-     * @return void
+     * Deve falhar ao criar um bairro vazio.
      */
-    public function test_falhar_salvar_bairro_vazio()
+    public function test_falhar_criar_bairro_vazio()
     {
-        //Processar
+        // Faz uma requisição POST para a rota de criação de bairro com dados vazios
         $response = $this->postJson('/api/neighborhoods', []);
+
+        // Verifica se a resposta tem o status HTTP 422 (Unprocessable Entity)
+        // Verifica se há erros de validação no campo 'name'
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(
-                ['name']
-            );
+            ->assertJsonValidationErrors(['name']);
     }
 
     /**
-     * Tentar salvar com o mesmo nome e falhar
+     * Deve falhar ao criar um bairro com o mesmo nome.
      */
-    public function test_falhar_salvar_mesmo_nome_bairro_falhar()
+    public function test_falhar_criar_bairro_mesmo_nome()
     {
-        $salvar = Neighborhood::factory()->create();
-        $novo = Neighborhood::factory()->make()->toArray();
-        $novo['name'] = $salvar->name;
-        //Processar
-        $response = $this->postJson('/api/neighborhoods', $novo);
+        // Cria um bairro usando a fábrica
+        $existingNeighborhood = Neighborhood::factory()->create();
+
+        // Cria um novo bairro usando a fábrica e define o mesmo nome do bairro existente
+        $newData = Neighborhood::factory()->make(['name' => $existingNeighborhood->name])->toArray();
+
+        // Faz uma requisição POST para a rota de criação de bairro com nome duplicado
+        $response = $this->postJson('/api/neighborhoods', $newData);
+
+        // Verifica se a resposta tem o status HTTP 422 (Unprocessable Entity)
+        // Verifica se há erros de validação no campo 'name'
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(
-                ['name']
-            );
+            ->assertJsonValidationErrors(['name']);
     }
 
     /**
-     * Pesquisar por id com sucesso
+     * Deve exibir um bairro com sucesso.
      */
-    public function test_pesquisar_id_bairro_com_sucesso()
+    public function test_exibir_bairro_com_sucesso()
     {
-        //Criar bairro
-        $bairro = Neighborhood::factory()->create();
+        // Cria um bairro usando a fábrica
+        $neighborhood = Neighborhood::factory()->create();
 
-        //Processar
-        $response = $this->getJson('/api/neighborhoods/' . $bairro->id);
+        // Faz uma requisição GET para a rota de exibição do bairro
+        $response = $this->getJson('/api/neighborhoods/' . $neighborhood->id);
 
-        //Deu certo a solicitação = Status 200
+        // Verifica se a resposta tem o status HTTP 200 (OK)
+        // Verifica a estrutura dos dados retornados
+        // Verifica se o nome do bairro na resposta corresponde ao nome do bairro criado
         $response->assertStatus(200)
-            ->assertJsonStructure(['id', 'name',  'created_at', 'updated_at',])
-            ->assertJson(['name' => $bairro->name,]);
+            ->assertJsonStructure(['id', 'name', 'created_at', 'updated_at'])
+            ->assertJson(['name' => $neighborhood->name]);
     }
 
     /**
-     * Pesquisar por id com inexistente e falhar
+     * Deve falhar ao exibir um bairro inexistente.
      */
-    public function test_pesquisar_id_inexistente_falhar()
+    public function test_falhar_exibir_bairro_inexistente()
     {
-        //Processar
+        // Faz uma requisição GET para a rota de exibição de um bairro inexistente
         $response = $this->getJson('/api/neighborhoods/9999999');
 
-        //Deu certo a solicitação = Status 200
+        // Verifica se a resposta tem o status HTTP 404 (Not Found)
+        // Verifica a mensagem de erro retornada
         $response->assertStatus(404)
             ->assertJson(['error' => 'Bairro não encontrado.']);
     }
 
     /**
-     * Deletar com sucesso
+     * Deve atualizar um bairro com sucesso.
      */
-    public function test_deletar_com_sucesso()
+    public function test_atualizar_bairro_com_sucesso()
     {
-        //Criar 
-        $bairro = Neighborhood::factory()->create();
+        // Cria um bairro usando a fábrica
+        $neighborhood = Neighborhood::factory()->create();
 
-        //Processar
-        $response = $this->deleteJson('/api/neighborhoods/' . $bairro->id);
+        // Cria dados atualizados usando a fábrica
+        $updatedData = Neighborhood::factory()->make()->toArray();
 
+        // Faz uma requisição PUT para a rota de atualização do bairro
+        $response = $this->putJson('/api/neighborhoods/' . $neighborhood->id, $updatedData);
+
+        // Verifica se a resposta tem o status HTTP 200 (OK)
+        // Verifica a estrutura dos dados retornados
+        $response->assertStatus(200)
+            ->assertJsonStructure(['id', 'name', 'created_at', 'updated_at']);
+    }
+
+    /**
+     * Deve falhar ao atualizar um bairro inexistente.
+     */
+    public function test_falhar_atualizar_bairro_inexistente()
+    {
+        // Cria dados atualizados usando a fábrica
+        $updatedData = Neighborhood::factory()->make()->toArray();
+
+        // Faz uma requisição PUT para a rota de atualização de um bairro inexistente
+        $response = $this->putJson('/api/neighborhoods/9999999', $updatedData);
+
+        // Verifica se a resposta tem o status HTTP 404 (Not Found)
+        // Verifica a mensagem de erro retornada
+        $response->assertStatus(404)
+            ->assertJson(['error' => 'Bairro não encontrado.']);
+    }
+
+    /**
+     * Deve falhar ao excluir um bairro com relacionamentos (códigos postais associados).
+     */
+    public function test_falhar_excluir_bairro_com_relacionamentos()
+    {
+        // Cria um bairro usando a fábrica
+        $neighborhood = Neighborhood::factory()->create();
+        $zipcode = ZipCode::factory()->make()->toArray();
+
+        // Simula a existência de códigos postais associados
+        $neighborhood->zipcodes()->create($zipcode);
+
+        // Faz uma requisição DELETE para a rota de exclusão do bairro
+        $response = $this->deleteJson('/api/neighborhoods/' . $neighborhood->id);
+
+        // Verifica se a resposta tem o status HTTP 400 (Bad Request)
+        // Verifica a mensagem de erro retornada
+        $response->assertStatus(400)
+            ->assertJson(['error' => 'Este bairro possui códigos postais associados e não pode ser excluído.']);
+    }
+
+    /**
+     * Deve excluir um bairro com sucesso.
+     */
+    public function test_excluir_bairro_com_sucesso()
+    {
+        // Cria um bairro usando a fábrica
+        $neighborhood = Neighborhood::factory()->create();
+
+        // Faz uma requisição DELETE para a rota de exclusão do bairro
+        $response = $this->deleteJson('/api/neighborhoods/' . $neighborhood->id);
+
+        // Verifica se a resposta tem o status HTTP 200 (OK)
+        // Verifica a mensagem de sucesso retornada
         $response->assertStatus(200)
             ->assertJson(['message' => 'Bairro deletado com sucesso.']);
     }
 
-    /**
-     * Deletar com falha qdo o registro nao existe
-     */
-    public function test_tentar_deletar_e_falhar()
+    public function test_falhar_excluir_bairro_inexistente()
     {
-        //Processar
-        $response = $this->deleteJson('/api/neighborhoods/99999');
+        // Faz uma requisição DELETE para a rota de exclusão de um bairro inexistente
+        $response = $this->deleteJson('/api/neighborhoods/9999999');
 
+        // Verifica se a resposta tem o status HTTP 404 (Not Found)
+        // Verifica a mensagem de erro retornada
         $response->assertStatus(404)
             ->assertJson(['error' => 'Bairro não encontrado.']);
     }
 
     /**
-     * Deletar com falha qdo o registro nao existe
+     * Deve permitir atualizar o mesmo cadastro com o mesmo nome.
      */
-    public function test_tentar_deletar_com_relacionamentos_e_falhar()
+    public function test_permitir_atualizar_bairro_com_mesmo_nome_mesmo_id()
     {
+        // Cria um bairro usando a fábrica
+        $neighborhood = Neighborhood::factory()->create();
 
-        $zip = ZipCode::factory()->create();
+        // Cria dados atualizados com o mesmo nome e o mesmo ID
+        $updatedData = $neighborhood->toArray();
 
-        //Processar
-        $response = $this->deleteJson('/api/neighborhoods/' . $zip->neighborhood_id);
+        // Tenta atualizar o bairro com os mesmos dados
+        $response = $this->putJson('/api/neighborhoods/' . $neighborhood->id, $updatedData);
 
-        $response->assertStatus(400)
-            ->assertJson(['error' => 'Este bairro possui códigos postais associados e não pode ser excluído.']);
+        // Verifica se a resposta tem o status HTTP 200 (OK)
+        // Verifica a estrutura dos dados retornados
+        $response->assertStatus(200)
+            ->assertJsonStructure(['id', 'name', 'created_at', 'updated_at']);
     }
 }
