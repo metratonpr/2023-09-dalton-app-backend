@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class BudgetUpdateRequest extends FormRequest
+class UpdateBudgetRequest extends FormRequest
 {
     public function authorize()
     {

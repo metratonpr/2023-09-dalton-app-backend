@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PriceListUpdateRequest extends FormRequest
+class UpdatePriceListRequest extends FormRequest
 {
     public function authorize()
     {
@@ -13,9 +13,7 @@ class PriceListUpdateRequest extends FormRequest
 
     public function rules()
     {
-        $priceListId = $this->route('price_list')->id;
-
-        return [
+              return [
             'price' => 'required|numeric|min:0',
             'isAvailable' => 'required|boolean',
             'store_id' => 'required|exists:stores,id',

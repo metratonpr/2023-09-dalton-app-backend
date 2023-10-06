@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ProductTypeUpdateRequest extends FormRequest
+class UpdateProductTypeRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,7 +14,7 @@ class ProductTypeUpdateRequest extends FormRequest
 
     public function rules()
     {
-        $productTypeId = $this->route('product_type')->id;
+        $productTypeId = $this->route('product_type');
 
         return [
             'name' => [

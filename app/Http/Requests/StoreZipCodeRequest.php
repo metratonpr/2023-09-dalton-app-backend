@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ZipCodeStoreRequest extends FormRequest
+class StoreZipCodeRequest extends FormRequest
 {
     public function authorize()
     {

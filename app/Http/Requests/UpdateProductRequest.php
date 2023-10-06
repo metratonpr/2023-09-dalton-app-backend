@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class ProductUpdateRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     public function authorize()
     {
@@ -13,10 +14,13 @@ class ProductUpdateRequest extends FormRequest
 
     public function rules()
     {
-        $productId = $this->route('product')->id;
+        $productId = $this->route('product');
 
         return [
-            'name' => 'required',
+            'name' => [
+                'required',
+                Rule::unique('neighborhoods', 'name')->ignore($productId),
+            ],
             'description' => 'nullable|string', // Adicione suas regras de validação específicas aqui
             'warranty' => 'nullable|string', // Adicione suas regras de validação específicas aqui
             'warranty_time' => 'nullable|numeric|min:0', // Adicione suas regras de validação específicas aqui

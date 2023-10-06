@@ -14,7 +14,7 @@ class ZipCodeUpdateRequest extends FormRequest
 
     public function rules()
     {
-        $zipCodeId = $this->route('zipcode')->id;
+        $zipCodeId = $this->route('zipcode');
 
         return [
             'zipcode' => [
