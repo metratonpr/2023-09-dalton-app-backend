@@ -14,7 +14,7 @@ class UpdateBudgetRequest extends FormRequest
 
     public function rules()
     {
-        $budgetId = $this->route('budget')->id;
+        $budgetId = $this->route('budget');
 
         return [
             'number' => [

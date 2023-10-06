@@ -14,7 +14,7 @@ class UpdateCityRequest extends FormRequest
 
     public function rules()
     {
-        $cityId = $this->route('city')->id;
+        $cityId = $this->route('city');
 
         return [
             'name' => [

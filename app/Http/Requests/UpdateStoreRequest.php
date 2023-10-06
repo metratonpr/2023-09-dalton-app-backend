@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Rule as ValidationRule;
+
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -23,7 +23,7 @@ class StoreUpdateRequest extends FormRequest
             'email' => [
                 'nullable',
                 'email',
-                ValidationRule::unique('stores', 'email')->ignore($storeId), // Validação de e-mail único, ignorando o registro atual
+                Rule::unique('stores', 'email')->ignore($storeId), // Validação de e-mail único, ignorando o registro atual
             ],
             'phone' => 'nullable|string', // Adicione suas regras de validação específicas aqui
             'cnpj' => 'nullable|string', // Adicione suas regras de validação específicas aqui
