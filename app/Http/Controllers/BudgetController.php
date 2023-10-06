@@ -16,7 +16,7 @@ class BudgetController extends Controller
      */
     public function index()
     {
-        $budgets = Budget::paginate(10);
+        $budgets = Budget::all();
 
         return response()->json(['data' => $budgets]);
     }

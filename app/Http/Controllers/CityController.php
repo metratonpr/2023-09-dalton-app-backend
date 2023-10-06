@@ -16,7 +16,7 @@ class CityController extends Controller
      */
     public function index()
     {
-        $cities = City::paginate(10);
+        $cities = City::all();
 
         return response()->json(['data' => $cities]);
     }
@@ -50,7 +50,7 @@ class CityController extends Controller
             return response()->json(['error' => 'Cidade não encontrada.'], 404);
         }
 
-        return response()->json(['data' => $city]);
+        return response()->json($city);
     }
 
     /**
@@ -72,7 +72,7 @@ class CityController extends Controller
 
         $city->update($data);
 
-        return response()->json(['data' => $city]);
+        return response()->json($city);
     }
 
     /**

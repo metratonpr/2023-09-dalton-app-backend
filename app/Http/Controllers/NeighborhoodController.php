@@ -71,7 +71,7 @@ class NeighborhoodController extends Controller
 
         $neighborhood->update($data);
 
-        return response()->json(['data' => $neighborhood]);
+        return response()->json($neighborhood);
     }
 
     /**

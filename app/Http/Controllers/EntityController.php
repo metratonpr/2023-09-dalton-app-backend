@@ -16,7 +16,7 @@ class EntityController extends Controller
      */
     public function index()
     {
-        $entities = Entity::paginate(10);
+        $entities = Entity::all();
 
         return response()->json(['data' => $entities]);
     }
@@ -50,7 +50,7 @@ class EntityController extends Controller
             return response()->json(['error' => 'Entidade não encontrada.'], 404);
         }
 
-        return response()->json(['data' => $entity]);
+        return response()->json($entity);
     }
 
     /**
@@ -72,7 +72,7 @@ class EntityController extends Controller
 
         $entity->update($data);
 
-        return response()->json(['data' => $entity]);
+        return response()->json($entity);
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Store;
-use Illuminate\Http\Request;
+
 use App\Http\Requests\StoreStoreRequest;
 use App\Http\Requests\UpdateStoreRequest;
 
@@ -16,7 +16,7 @@ class StoreController extends Controller
      */
     public function index()
     {
-        $stores = Store::paginate(10);
+        $stores = Store::all();
 
         return response()->json(['data' => $stores]);
     }
@@ -50,7 +50,7 @@ class StoreController extends Controller
             return response()->json(['error' => 'Loja não encontrada.'], 404);
         }
 
-        return response()->json(['data' => $store]);
+        return response()->json($store);
     }
 
     /**
@@ -72,7 +72,7 @@ class StoreController extends Controller
 
         $store->update($data);
 
-        return response()->json(['data' => $store]);
+        return response()->json($store);
     }
 
     /**

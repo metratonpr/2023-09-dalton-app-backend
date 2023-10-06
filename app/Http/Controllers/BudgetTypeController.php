@@ -16,7 +16,7 @@ class BudgetTypeController extends Controller
      */
     public function index()
     {
-        $budgetTypes = BudgetType::paginate(10);
+        $budgetTypes = BudgetType::all();
 
         return response()->json(['data' => $budgetTypes]);
     }
@@ -87,6 +87,11 @@ class BudgetTypeController extends Controller
 
         if (!$budgetType) {
             return response()->json(['error' => 'Tipo de Orçamento não encontrado.'], 404);
+        }
+
+        // Verificar se há orçamentos ou lojas associadas antes de excluir
+        if ($budgetType->budgets->count() > 0) {
+            return response()->json(['error' => 'Este Tipo de Orçamento possui orçamentos ou lojas associadas e não pode ser excluído.'], 400);
         }
 
         $budgetType->delete();

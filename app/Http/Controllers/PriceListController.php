@@ -16,7 +16,7 @@ class PriceListController extends Controller
      */
     public function index()
     {
-        $priceLists = PriceList::paginate(10);
+        $priceLists = PriceList::all();
 
         return response()->json(['data' => $priceLists]);
     }
@@ -50,7 +50,7 @@ class PriceListController extends Controller
             return response()->json(['error' => 'Lista de Preços não encontrada.'], 404);
         }
 
-        return response()->json(['data' => $priceList]);
+        return response()->json($priceList);
     }
 
     /**
@@ -72,7 +72,7 @@ class PriceListController extends Controller
 
         $priceList->update($data);
 
-        return response()->json(['data' => $priceList]);
+        return response()->json($priceList);
     }
 
     /**

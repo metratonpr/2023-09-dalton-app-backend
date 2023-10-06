@@ -16,7 +16,7 @@ class ProductTypeController extends Controller
      */
     public function index()
     {
-        $productTypes = ProductType::paginate(10);
+        $productTypes = ProductType::all();
 
         return response()->json(['data' => $productTypes]);
     }
@@ -50,7 +50,7 @@ class ProductTypeController extends Controller
             return response()->json(['error' => 'Tipo de Produto não encontrado.'], 404);
         }
 
-        return response()->json(['data' => $productType]);
+        return response()->json($productType);
     }
 
     /**
@@ -72,7 +72,7 @@ class ProductTypeController extends Controller
 
         $productType->update($data);
 
-        return response()->json(['data' => $productType]);
+        return response()->json($productType);
     }
 
     /**
