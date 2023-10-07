@@ -50,7 +50,7 @@ class BudgetTypeController extends Controller
             return response()->json(['error' => 'Tipo de Orçamento não encontrado.'], 404);
         }
 
-        return response()->json(['data' => $budgetType]);
+        return response()->json($budgetType);
     }
 
     /**
@@ -72,7 +72,7 @@ class BudgetTypeController extends Controller
 
         $budgetType->update($data);
 
-        return response()->json(['data' => $budgetType]);
+        return response()->json($budgetType);
     }
 
     /**
