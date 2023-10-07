@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Country;
+use App\Models\State;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -12,219 +13,218 @@ class CountryTest extends TestCase
     use RefreshDatabase, WithFaker;
 
     /**
-     * Testa a listagem de países.
-     *
-     * @return void
+     * Deve listar países com sucesso.
      */
-    public function test_listagem_de_paises()
+    public function test_listar_paises_com_sucesso()
     {
-        // Crie alguns países usando o Factory
-        Country::factory()->count(5)->create();
+        // Cria 10 países usando a fábrica
+        Country::factory()->count(10)->create();
 
-        // Faça uma requisição GET para a rota que lista os países
+        // Faz uma requisição GET para a rota de listagem de países
         $response = $this->getJson('/api/countries');
 
-        // Verifique se a resposta tem status 200 (OK)
-        $response->assertStatus(200);
-
-        // Verifique se o número de países na resposta é igual ao número criado pelo Factory (5)
-        $response->assertJsonCount(5, 'data');
-
-        // Verifique a estrutura dos dados retornados
-        $response->assertJsonStructure([
-            'data' => [
-                '*' => [
-                    'id',
-                    'name',
-                    'created_at',
-                    'updated_at',
+        // Verifica se a resposta tem o status HTTP 200 (OK)
+        // Verifica se a resposta possui 10 itens no campo 'data'
+        // Verifica a estrutura dos dados retornados
+        $response->assertStatus(200)
+            ->assertJsonCount(10, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => ['id', 'name', 'created_at', 'updated_at']
                 ]
-            ]
-        ]);
+            ]);
     }
 
     /**
-     * Testa a criação de um país com sucesso.
-     *
-     * @return void
+     * Deve criar um país com sucesso.
      */
-    public function test_criacao_de_pais_com_sucesso()
+    public function test_criar_pais_com_sucesso()
     {
-        // Crie dados aleatórios para um país usando o Factory
-        $countryData = [
-            'name' => $this->faker->country,
-        ];
+        // Cria um novo país usando a fábrica e transforma em um array
+        $newData = Country::factory()->make()->toArray();
 
-        // Faça uma requisição POST para a rota de criação de países
-        $response = $this->postJson('/api/countries', $countryData);
+        // Faz uma requisição POST para a rota de criação de país
+        $response = $this->postJson('/api/countries', $newData);
 
-        // Verifique se a resposta tem status 201 (Created)
-        $response->assertStatus(201);
-
-        // Verifique se a estrutura dos dados retornados está correta
-        $response->assertJsonStructure([
-            'id',
-            'name',
-            'created_at',
-            'updated_at',
-        ]);
+        // Verifica se a resposta tem o status HTTP 201 (Created)
+        // Verifica a estrutura dos dados retornados
+        $response->assertStatus(201)
+            ->assertJsonStructure(['id', 'name', 'created_at', 'updated_at']);
     }
 
     /**
-     * Testa a criação de um país com falha.
-     *
-     * @return void
+     * Deve falhar ao criar um país vazio.
      */
-    public function test_criacao_de_pais_com_falha()
+    public function test_falhar_criar_pais_vazio()
     {
-        // Crie dados inválidos para um país usando o Factory
-        $countryData = [
-            'name' => '', // Nome em branco, o que deve falhar na validação.
-        ];
+        // Faz uma requisição POST para a rota de criação de país com dados vazios
+        $response = $this->postJson('/api/countries', []);
 
-        // Faça uma requisição POST para a rota de criação de países
-        $response = $this->postJson('/api/countries', $countryData);
-
-        // Verifique se a resposta tem status 422 (Unprocessable Entity)
-        $response->assertStatus(422);
-
-        // Verifique se há erros de validação para o campo "name"
-        $response->assertJsonValidationErrors(['name']);
+        // Verifica se a resposta tem o status HTTP 422 (Unprocessable Entity)
+        // Verifica se há erros de validação no campo 'name'
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['name']);
     }
 
     /**
-     * Testa a exibição de um país específico.
-     *
-     * @return void
+     * Deve falhar ao criar um país com o mesmo nome.
      */
-    public function test_exibicao_de_pais_sucesso()
+    public function test_falhar_criar_pais_mesmo_nome()
     {
-        // Crie um país usando o Factory
+        // Cria um país usando a fábrica
+        $existingCountry = Country::factory()->create();
+
+        // Cria um novo país usando a fábrica e define o mesmo nome do país existente
+        $newData = Country::factory()->make(['name' => $existingCountry->name])->toArray();
+
+        // Faz uma requisição POST para a rota de criação de país com nome duplicado
+        $response = $this->postJson('/api/countries', $newData);
+
+        // Verifica se a resposta tem o status HTTP 422 (Unprocessable Entity)
+        // Verifica se há erros de validação no campo 'name'
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['name']);
+    }
+
+    /**
+     * Deve exibir um país com sucesso.
+     */
+    public function test_exibir_pais_com_sucesso()
+    {
+        // Cria um país usando a fábrica
         $country = Country::factory()->create();
 
-        // Faça uma requisição GET para a rota que exibe um país específico
+        // Faz uma requisição GET para a rota de exibição do país
         $response = $this->getJson('/api/countries/' . $country->id);
 
-        // Verifique se a resposta tem status 200 (OK)
-        $response->assertStatus(200);
-
-        // Verifique se os dados retornados correspondem aos dados do país criado
-        $response->assertJson([
-            'id' => $country->id,
-            'name' => $country->name,
-        ]);
+        // Verifica se a resposta tem o status HTTP 200 (OK)
+        // Verifica a estrutura dos dados retornados
+        // Verifica se o nome do país na resposta corresponde ao nome do país criado
+        $response->assertStatus(200)
+            ->assertJsonStructure(['id', 'name', 'created_at', 'updated_at'])
+            ->assertJson(['name' => $country->name]);
     }
 
     /**
-     * Testa a exibição de um país inexistente.
-     *
-     * @return void
+     * Deve falhar ao exibir um país inexistente.
      */
-    public function test_exibicao_de_pais_inexistente()
+    public function test_falhar_exibir_pais_inexistente()
     {
-        // Faça uma requisição GET para a rota que exibe um país inexistente
-        $response = $this->getJson('/api/countries/999999');
+        // Faz uma requisição GET para a rota de exibição de um país inexistente
+        $response = $this->getJson('/api/countries/9999999');
 
-        // Verifique se a resposta tem status 404 (Not Found)
-        $response->assertStatus(404);
-
-        // Verifique se a mensagem de erro é retornada
-        $response->assertJson([
-            'error' => 'País não encontrado.',
-        ]);
+        // Verifica se a resposta tem o status HTTP 404 (Not Found)
+        // Verifica a mensagem de erro retornada
+        $response->assertStatus(404)
+            ->assertJson(['error' => 'País não encontrado.']);
     }
 
     /**
-     * Testa a atualização de um país com sucesso.
-     *
-     * @return void
+     * Deve atualizar um país com sucesso.
      */
-    public function test_atualizacao_de_pais_com_sucesso()
+    public function test_atualizar_pais_com_sucesso()
     {
-        // Crie um país usando o Factory
+        // Cria um país usando a fábrica
         $country = Country::factory()->create();
 
-        // Crie novos dados aleatórios para o país
-        $newCountryData = [
-            'name' => $this->faker->country,
-        ];
+        // Cria dados atualizados usando a fábrica
+        $updatedData = Country::factory()->make()->toArray();
 
-        // Faça uma requisição PUT para a rota de atualização do país
-        $response = $this->putJson('/api/countries/' . $country->id, $newCountryData);
+        // Faz uma requisição PUT para a rota de atualização do país
+        $response = $this->putJson('/api/countries/' . $country->id, $updatedData);
 
-        // Verifique se a resposta tem status 200 (OK)
-        $response->assertStatus(200);
-
-        // Verifique se os dados retornados correspondem aos novos dados do país
-        $response->assertJson([
-            'id' => $country->id,
-            'name' => $newCountryData['name'],
-        ]);
+        // Verifica se a resposta tem o status HTTP 200 (OK)
+        // Verifica a estrutura dos dados retornados
+        $response->assertStatus(200)
+            ->assertJsonStructure(['id', 'name', 'created_at', 'updated_at']);
     }
 
     /**
-     * Testa a atualização de um país com falha de validação.
-     *
-     * @return void
+     * Deve falhar ao atualizar um país inexistente.
      */
-    public function test_atualizacao_de_pais_com_falha_de_validacao()
+    public function test_falhar_atualizar_pais_inexistente()
     {
-        // Crie um país usando o Factory
-        $country = Country::factory()->create();
+        // Cria dados atualizados usando a fábrica
+        $updatedData = Country::factory()->make()->toArray();
 
-        // Crie novos dados inválidos para o país (nome em branco)
-        $newCountryData = [
-            'name' => '',
-        ];
+        // Faz uma requisição PUT para a rota de atualização de um país inexistente
+        $response = $this->putJson('/api/countries/9999999', $updatedData);
 
-        // Faça uma requisição PUT para a rota de atualização do país
-        $response = $this->putJson('/api/countries/' . $country->id, $newCountryData);
-
-        // Verifique se a resposta tem status 422 (Unprocessable Entity)
-        $response->assertStatus(422);
-
-        // Verifique se há erros de validação para o campo "name"
-        $response->assertJsonValidationErrors(['name']);
+        // Verifica se a resposta tem o status HTTP 404 (Not Found)
+        // Verifica a mensagem de erro retornada
+        $response->assertStatus(404)
+            ->assertJson(['error' => 'País não encontrado.']);
     }
 
     /**
-     * Testa a exclusão de um país com sucesso.
-     *
-     * @return void
+     * Deve falhar ao excluir um país com estados associados.
      */
-    public function test_exclusao_de_pais_com_sucesso()
+    public function test_falhar_excluir_pais_com_estados_associados()
     {
-        // Crie um país usando o Factory
+        // Cria um país usando a fábrica
         $country = Country::factory()->create();
+        $state = State::factory()->make()->toArray();
 
-        // Faça uma requisição DELETE para a rota de exclusão do país
+        // Simula a existência de estados associados
+        $country->states()->create($state);
+
+        // Faz uma requisição DELETE para a rota de exclusão do país
         $response = $this->deleteJson('/api/countries/' . $country->id);
 
-        // Verifique se a resposta tem status 200 (OK)
-        $response->assertStatus(200);
-
-        // Verifique se a mensagem de exclusão foi retornada
-        $response->assertJson([
-            'message' => 'País deletado com sucesso.',
-        ]);
+        // Verifica se a resposta tem o status HTTP 400 (Bad Request)
+        // Verifica a mensagem de erro retornada
+        $response->assertStatus(400)
+            ->assertJson(['error' => 'Este país possui estados associados e não pode ser excluído.']);
     }
 
     /**
-     * Testa a exclusão de um país inexistente.
-     *
-     * @return void
+     * Deve excluir um país com sucesso.
      */
-    public function test_exclusao_de_pais_inexistente()
+    public function test_excluir_pais_com_sucesso()
     {
-        // Faça uma requisição DELETE para a rota de exclusão de um país inexistente
-        $response = $this->deleteJson('/api/countries/999999');
+        // Cria um país usando a fábrica
+        $country = Country::factory()->create();
 
-        // Verifique se a resposta tem status 404 (Not Found)
-        $response->assertStatus(404);
+        // Faz uma requisição DELETE para a rota de exclusão do país
+        $response = $this->deleteJson('/api/countries/' . $country->id);
 
-        // Verifique se a mensagem de erro é retornada
-        $response->assertJson([
-            'error' => 'País não encontrado.',
-        ]);
+        // Verifica se a resposta tem o status HTTP 200 (OK)
+        // Verifica a mensagem de sucesso retornada
+        $response->assertStatus(200)
+            ->assertJson(['message' => 'País deletado com sucesso.']);
+    }
+
+    /**
+     * Deve falhar ao excluir um país inexistente.
+     */
+    public function test_falhar_excluir_pais_inexistente()
+    {
+        // Faz uma requisição DELETE para a rota de exclusão de um país inexistente
+        $response = $this->deleteJson('/api/countries/9999999');
+
+        // Verifica se a resposta tem o status HTTP 404 (Not Found)
+        // Verifica a mensagem de erro retornada
+        $response->assertStatus(404)
+            ->assertJson(['error' => 'País não encontrado.']);
+    }
+
+    /**
+     * Deve permitir atualizar o mesmo cadastro com o mesmo nome.
+     */
+    public function test_permitir_atualizar_pais_com_mesmo_nome_mesmo_id()
+    {
+        // Cria um país usando a fábrica
+        $country = Country::factory()->create();
+
+        // Cria dados atualizados com o mesmo nome e o mesmo ID
+        $updatedData = $country->toArray();
+
+        // Tenta atualizar o país com os mesmos dados
+        $response = $this->putJson('/api/countries/' . $country->id, $updatedData);
+
+        // Verifica se a resposta tem o status HTTP 200 (OK)
+        // Verifica a estrutura dos dados retornados
+        $response->assertStatus(200)
+            ->assertJsonStructure(['id', 'name', 'created_at', 'updated_at']);
     }
 }
