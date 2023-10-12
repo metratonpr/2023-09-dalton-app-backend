@@ -22,7 +22,7 @@ class ProductFactory extends Factory
             'name' => $this->faker->unique()->word(),
             'description' => $this->faker->sentence(),
             'warranty' => $this->faker->boolean(),
-            'warranty_time' => $this->faker->randomNumber($min = 30, $max=90),
+            'warranty_time' => $this->faker->numberBetween($int1 = 0, $int2 = 100),
             'product_type_id' => function () {
                 return ProductType::factory()->create()->id;
             },

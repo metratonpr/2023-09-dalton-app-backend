@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductType;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductTypeRequest;
 use App\Http\Requests\UpdateProductTypeRequest;
 
@@ -91,7 +90,7 @@ class ProductTypeController extends Controller
 
         // Verificar se há produtos associados antes de excluir
         if ($productType->products->count() > 0) {
-            return response()->json(['error' => 'Este tipo de produto possui produtos associados e não pode ser excluído.'], 400);
+            return response()->json(['error' =>  'Este Tipo de Produto possui produtos associados e não pode ser excluído.'], 400);
         }
 
         $productType->delete();

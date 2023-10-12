@@ -9,10 +9,12 @@ use App\Http\Controllers\EntityController;
 use App\Http\Controllers\NeighborhoodController;
 use App\Http\Controllers\PriceListController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ZipCodeController;
 use App\Models\BudgetDetail;
+use App\Models\ProductType;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,7 +36,7 @@ Route::apiResource('/zip-codes', ZipCodeController::class);
 Route::apiResource('/entities', EntityController::class);
 Route::apiResource('/addresses', AddressController::class);
 Route::apiResource('/budget-types', BudgetTypeController::class);
-Route::apiResource('/product-types', ProductController::class);
+Route::apiResource('/product-types', ProductTypeController::class);
 Route::apiResource('/products', ProductController::class);
 Route::apiResource('/stores', StoreController::class);
 Route::apiResource('/budget-details', BudgetDetailController::class);
