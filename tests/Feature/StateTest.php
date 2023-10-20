@@ -167,6 +167,7 @@ class StateTest extends TestCase
         // Cria um estado usando a fábrica
         $state = State::factory()->create();
         $city = City::factory()->make()->toArray();
+        //Teste nova funcionalidade
 
         // Simula a existência de cidades associadas
         $state->cities()->create($city);
